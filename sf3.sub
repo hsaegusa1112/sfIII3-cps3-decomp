@@ -667,6 +667,7 @@ INPUT obj\PLCNTDAT.obj
 INPUT obj\PLCNT2.obj
 INPUT obj\PLCNT3.obj
 INPUT obj\PLMAIN.obj
+INPUT obj\training.obj
 INPUT obj\PLMAIN2.obj
 INPUT obj\PLS00.obj
 INPUT obj\PLS01.obj

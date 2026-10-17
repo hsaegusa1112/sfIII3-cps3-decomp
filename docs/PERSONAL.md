@@ -68,3 +68,19 @@ in nvram and loads that over the ROM files, so use an empty
   `cmd_data_set` (`src/cmd_main_2.c`). Universal slots (< 16: jump, dash,
   blocking, red-parry, ukemi) keep arcade values by design.
 - Sparring bot: `src/bot_*.c` — active when P2 is CPU in Versus mode.
+
+## Training mode
+
+Coin in, pick your character, then **hold 3P (all three punches) while
+confirming** — you get a mirror match against a training dummy: timer
+frozen, no KO (health refills when either side nears death), SA gauge
+always full, stun disabled.
+
+In fight (P1 controls):
+- **hold 3P ~3/4 sec** — cycle dummy: STAND, CROUCH, BLOCK HI, BLOCK LO,
+  RAND GRD, JUMP, CPU (current mode shown top-center)
+- **hold 3K ~3/4 sec** — reset positions, health and gauge
+
+Code: `src/training.c` (+ `include/training.h`), wired at PLMAIN (dummy
+input), Game_Main (upkeep + timer), PLPCA (KO clamp), manage_2 (match-end
+gate), sel_pl / next_cpu (entry + mirror).

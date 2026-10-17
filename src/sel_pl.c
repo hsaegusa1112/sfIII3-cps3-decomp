@@ -82,6 +82,7 @@
 #include "textsound_3.h"
 #include "sel_pl.h"
 #include "fighter.h"
+#include "training.h"
 
 #pragma inline(Setup_BG)
 
@@ -525,6 +526,13 @@ void Sel_PL_Sub(s16 PL_id, u16 sw) {
     }
     if (!(sw & 0x3F0)) {
         return;
+    }
+    if (PL_id == 0) {
+        /* personal mod: hold 3P while confirming = training mode */
+        Train_Mode = ((p1sw_0 & 0x70) == 0x70) ? 1 : 0;
+        if (Train_Mode) {
+            Train_Dummy = TD_STAND;
+        }
     }
     Sel_PL_Complete[PL_id] = 1;
     My_char[PL_id] = ID_of_Face[Cursor_Y[PL_id]][Cursor_X[PL_id]];
