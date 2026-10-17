@@ -83,8 +83,16 @@ sf3.bin: sf3.abs
 build/cg.bin: rom/sfiii3nr1.zip
 	$(PYTHON) tools/cps3rom.py extract $< $@
 
+# MOD=1: personal build — a prog.bin hash that differs from the arcade
+# original is the point, so the pack step's mismatch is not a build error.
+ifeq ($(MOD),1)
+PACK = -$(PYTHON) tools/cps3rom.py pack
+else
+PACK = $(PYTHON) tools/cps3rom.py pack
+endif
+
 build/prog.bin: sf3.bin build/cg.bin
-	$(PYTHON) tools/cps3rom.py pack sf3.bin build/cg.bin rom/sfiii3nr1.zip build
+	$(PACK) sf3.bin build/cg.bin rom/sfiii3nr1.zip build
 
 clean:
 	rm -rf obj build sf3.abs sf3.map sf3.bin

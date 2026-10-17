@@ -56,6 +56,7 @@
 #include "PLCNTDAT.h"
 #include "plcntdat_2.h"
 #include "cmd_main_2.h"
+#include "personal_config.h"
 #include "cps3.h"
 
 
@@ -82,7 +83,7 @@ void key_thru(PLW* pl) {
 void cmd_data_set(PLW* _p0, s16 i) {
     u8* ptr3;
     u16* ptr4;
-    (&wcp[cmd_id].reset[0])[i] = *cmd_tbl_ptr++;
+    s16 reset = *cmd_tbl_ptr++;
     waza_work[cmd_id][i].w_dead = *cmd_tbl_ptr++;
     waza_work[cmd_id][i].w_dead2 = *cmd_tbl_ptr++;
     ptr3 = &wcp[cmd_id].waza_r[i][0];
@@ -96,6 +97,13 @@ void cmd_data_set(PLW* _p0, s16 i) {
     *ptr4++ = *cmd_tbl_ptr++;
     *ptr4++ = *cmd_tbl_ptr++;
     *ptr4++ = *cmd_tbl_ptr++;
+    /* personal mod: SF6-style buffer — see include/personal_config.h */
+#if PBUF_ENABLE
+    if (i >= PBUF_MIN_SLOT) {
+        reset *= PBUF_MUL;
+    }
+#endif
+    (&wcp[cmd_id].reset[0])[i] = reset;
 }
 
 

@@ -64,6 +64,7 @@ in nvram and loads that over the ROM files, so use an empty
 
 ## Where the mods live
 
-- Input buffer: `personal_config.h` + the command-window scaling in
-  `src/CMD_MAIN.c` (see git log for the exact edit points).
+- Input buffer: `include/personal_config.h` + the parse-time scaling in
+  `cmd_data_set` (`src/cmd_main_2.c`). Universal slots (< 16: jump, dash,
+  blocking, red-parry, ukemi) keep arcade values by design.
 - Sparring bot: `src/bot_*.c` — active when P2 is CPU in Versus mode.
