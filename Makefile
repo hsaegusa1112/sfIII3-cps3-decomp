@@ -2,7 +2,19 @@
 BIN = bin
 PYTHON ?= python
 export SHC_LIB ?= $(CURDIR)/bin
+
+# Native Windows: run the .exe tools directly. Any other host: run them through
+# wibo (https://github.com/decompals/wibo), which maps C:/ to the filesystem root.
+ifeq ($(shell uname -s),Windows_NT)
+TOOL = $(1)
 export SHC_TMP ?= C:\TEMP
+SHC_TMP_MKDIR = $(SHC_TMP)
+else
+WIBO ?= .tools/wibo
+TOOL = $(WIBO) $(1)
+SHC_TMP ?= C:/tmp/sf3-shc
+SHC_TMP_MKDIR = $(subst C:/,/,$(SHC_TMP))
+endif
 
 CFLAGS = -cpu=sh2 -division=cpu -endian=big -pic=0 -extra=m=8,a=8 -nortnext -include=include
 OPT = -optimize=1 -speed
@@ -40,24 +52,24 @@ all: build/prog.bin
 # its own temporary directory: two compilers sharing one fail with an internal error under make -j
 obj/%.obj: %.c | obj
 	@echo $<
-	@mkdir -p "$(SHC_TMP)/$(*F)"; SHC_TMP='$(SHC_TMP)\$(*F)' \
-		$(BIN)/shc.exe $(call win,$<) $(CFLAGS) $(OPT) -object=$(call win,$@) >$(@:.obj=.log) 2>&1; \
-		r=$$?; rm -rf "$(SHC_TMP)/$(*F)"; [ $$r = 0 ] || { grep ') : ' $(@:.obj=.log); exit 1; }; rm -f $(@:.obj=.log)
+	@mkdir -p "$(SHC_TMP_MKDIR)/$(*F)"; SHC_TMP='$(SHC_TMP)\$(*F)' \
+		$(call TOOL,$(BIN)/shc.exe) $(call win,$<) $(CFLAGS) $(OPT) -object=$(call win,$@) >$(@:.obj=.log) 2>&1; \
+		r=$$?; rm -rf "$(SHC_TMP_MKDIR)/$(*F)"; [ $$r = 0 ] || { grep ') : ' $(@:.obj=.log); exit 1; }; rm -f $(@:.obj=.log)
 
 obj/%.obj: %.src | obj
-	$(BIN)/asmsh.exe $(call win,$<) -object=$(call win,$@)
+	$(call TOOL,$(BIN)/asmsh.exe) $(call win,$<) -object=$(call win,$@)
 
 # shc writes no dependency lists, so a header change rebuilds everything
 $(OBJS): $(wildcard include/*.h)
 
 obj:
-	mkdir -p obj "$(SHC_TMP)"
+	mkdir -p obj "$(SHC_TMP_MKDIR)"
 
 sf3.abs: $(OBJS) sf3.sub
-	$(BIN)/lnk.exe -subcommand=sf3.sub
+	$(call TOOL,$(BIN)/lnk.exe) -subcommand=sf3.sub
 
 sf3.bin: sf3.abs
-	$(BIN)/rof2bin.exe -s=06000000 -e=07000000 -v=00 sf3.abs
+	$(call TOOL,$(BIN)/rof2bin.exe) -s=06000000 -e=07000000 -v=00 sf3.abs
 
 build/cg.bin: rom/sfiii3nr1.zip
 	$(PYTHON) tools/cps3rom.py extract $< $@

@@ -1,0 +1,16 @@
+# macOS bring-up: run the Win32 SHC toolchain under wibo (linux/amd64 via Rosetta)
+# Build:  docker build --platform linux/amd64 -t sf3-build .
+# Run:    docker run --rm -it --platform linux/amd64 -v "$PWD":/work -w /work sf3-build bash
+FROM --platform=linux/amd64 ubuntu:22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3 wget ca-certificates make \
+    && rm -rf /var/lib/apt/lists/*
+
+# wibo: 32-bit Windows PE loader for linux x86-64
+RUN wget -q -O /usr/local/bin/wibo \
+        https://github.com/decompals/wibo/releases/download/0.6.13/wibo \
+    && chmod +x /usr/local/bin/wibo
+
+WORKDIR /work
+CMD ["/bin/bash"]
