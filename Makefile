@@ -68,8 +68,17 @@ obj:
 sf3.abs: $(OBJS) sf3.sub
 	$(call TOOL,$(BIN)/lnk.exe) -subcommand=sf3.sub
 
+ifeq ($(shell uname -s),Darwin)
+# rof2bin writes scratch files to the drive root (\s2kt8), which macOS forbids:
+# run that one step in the linux/amd64 container where / is writable
+# (docker build --platform linux/amd64 -f Dockerfile.macos -t sf3-build .)
+ROF2BIN = docker run --rm --platform linux/amd64 -v $(CURDIR):/work -w /work sf3-build /usr/local/bin/wibo $(BIN)/rof2bin.exe
+else
+ROF2BIN = $(call TOOL,$(BIN)/rof2bin.exe)
+endif
+
 sf3.bin: sf3.abs
-	$(call TOOL,$(BIN)/rof2bin.exe) -s=06000000 -e=07000000 -v=00 sf3.abs
+	$(ROF2BIN) -s=06000000 -e=07000000 -v=00 sf3.abs
 
 build/cg.bin: rom/sfiii3nr1.zip
 	$(PYTHON) tools/cps3rom.py extract $< $@
