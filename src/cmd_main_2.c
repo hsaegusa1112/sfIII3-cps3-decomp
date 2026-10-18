@@ -61,6 +61,23 @@
 
 
 
+/* personal mod: SF6-style direction leniency (include/personal_config.h).
+ * Lever nibbles: 1 up, 2 down, 4 forward, 6 down-forward (facing-relative).
+ * forward also accepts down-forward; down also accepts down-forward. */
+s16 psc_lever_match(s16 want, s16 have) {
+#if PSC_LENIENT
+    if (want == 4 && have == 6) {
+        return 1;
+    }
+    if (want == 2 && have == 6) {
+        return 1;
+    }
+#endif
+    return want == have;
+}
+
+
+
 void waza_check(PLW* pl) {
     cmd_pl = pl;
     cmd_id = cmd_pl->wu.id;
@@ -209,7 +226,7 @@ void check_0(void) {
     if (dead_lvr_check() == 0) {
         if (waza_ptr->w_lvr & 0x8000) {
             sw_work = waza_ptr->w_lvr & 0xF;
-            if (sw_lever == sw_work) {
+            if (psc_lever_match(sw_work, sw_lever)) {
                 if (*waza_ptr->w_ptr == 28) {
                     command_ok();
                 } else {
@@ -242,7 +259,7 @@ void check_1(void) {
     if (dead_lvr_check() == 0) {
         sw_work = waza_ptr->w_lvr & 0xF;
         if (waza_ptr->w_lvr & 0x8000) {
-            if (sw_work == chk_pl->sw_lever) {
+            if (psc_lever_match(sw_work, chk_pl->sw_lever)) {
                 waza_ptr->free2--;
                 if (waza_ptr->uni0.tame.flag) {
                     return;
@@ -1424,8 +1441,8 @@ void check_26(void) {
     u16 sw_now_lvr = chk_pl->sw_lever & 0xF;
     if (!dead_lvr_check()) {
         sw_work = waza_ptr->w_lvr & 0xF;
-        if (sw_lever != sw_work) {
-            if (sw_now_lvr != sw_work) {
+        if (!psc_lever_match(sw_work, sw_lever)) {
+            if (!psc_lever_match(sw_work, sw_now_lvr)) {
                 if (waza_ptr->uni0.tame.flag) {
                     if (*waza_ptr->w_ptr == 28) {
                         command_ok();
