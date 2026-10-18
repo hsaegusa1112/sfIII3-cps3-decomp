@@ -31,7 +31,6 @@
 #include "EFF02.h"
 #include "Grade.h"
 #include "PLPCA.h"
-#include "training.h"
 
 
 
@@ -385,16 +384,12 @@ void subtract_cu_vital(PLW* wk) {
                 wk->wu.vital_new = 0;
             }
             if (wk->wu.vital_new < 0) {
-                if (Train_Mode) {
-                    wk->wu.vital_new = 1;
-                } else {
-                    wk->wu.vital_new = -1;
-                    wk->dead_flag = 1;
-                    dead_voice_flag = 1;
-                    if (round_slow_flag == 0) {
-                        set_conclusion_slow();
-                        round_slow_flag = 1;
-                    }
+                wk->wu.vital_new = -1;
+                wk->dead_flag = 1;
+                dead_voice_flag = 1;
+                if (round_slow_flag == 0) {
+                    set_conclusion_slow();
+                    round_slow_flag = 1;
                 }
             } else if (wk->py->flag == 0) {
                 wk->py->now.quantity.h += wk->wu.dm_piyo;

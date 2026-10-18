@@ -14,7 +14,6 @@
 #include "romdata.h"
 #include "extern.h"
 #include "manage_2.h"
-#include "training.h"
 #include "SYS_sub.h"
 #include "aboutspr.h"
 #include "EM_Cand.h"
@@ -779,7 +778,7 @@ void Game_Manage_8_0(void) {
     Quick_Entry();
     if (Round_Operator[Winner_id]) {
         Pool_Score(WINNER);
-        if (Train_Mode == 0 && PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
+        if (PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
             C_No1++;
             Additional_Bonus(WINNER);
             grade_makeup_stage_parameter(WINNER);
@@ -792,7 +791,7 @@ void Game_Manage_8_0(void) {
     } else {
         C_No1 = 3;
         C_Timer = 30;
-        if (Train_Mode == 0 && PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
+        if (PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
             grade_makeup_stage_parameter(WINNER);
             grade_makeup_stage_parameter(LOSER);
         }
@@ -1003,7 +1002,7 @@ u32 Setup_Comp_Bonus(void) {
 void Game_Manage_9th(void) {
     switch (C_No1) {
     case 0:
-        if (Train_Mode == 0 && PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
+        if (PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
             C_No0++;
             C_No1 = 0;
             C_Timer = 75;
@@ -2109,7 +2108,7 @@ void Update_Personal_Time(s16 id) {
 
 void Check_Fade_Out_BGM(s16 Time) {
     if (!BGM_Fade_Out_Flag) {
-        if (Train_Mode == 0 && PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
+        if (PL_Wins[Winner_id] >= Battle_Round[Play_Type] + 1) {
             BGM_Fade_Out_Flag = 1;
             bgm_fade_out(Time);
         }

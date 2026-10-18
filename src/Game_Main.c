@@ -109,7 +109,6 @@
 #include "EM_Cand.h"
 #include "lose_pl.h"
 #include "PLS02.h"
-#include "training.h"
 
 
 
@@ -699,9 +698,6 @@ void Game2_0(void) {
 void Game2_1(void) {
     Game_timer += 1;
     set_EXE_flag();
-    if (Train_Mode) {
-        training_frame();
-    }
     Time_Control();
     Player_control();
     vital_cont_main();
@@ -1399,7 +1395,7 @@ void Game_Dummy(void) {
 
 
 void Time_Control(void) {
-    if (Train_Mode == 0 && Allow_a_battle_f != 0 && Demo_Step_Flag == 0 && Bonus_Game_Flag == 0) {
+    if (Allow_a_battle_f != 0 && Demo_Step_Flag == 0 && Bonus_Game_Flag == 0) {
         count_cont_main();
         if (Control_Time >= Limit_Time) {
             Control_Time = Limit_Time;

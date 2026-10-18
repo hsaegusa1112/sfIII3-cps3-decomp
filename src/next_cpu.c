@@ -75,7 +75,6 @@
 #include "textsound_2.h"
 #include "textsound_3.h"
 #include "next_cpu.h"
-#include "training.h"
 
 
 
@@ -1023,10 +1022,6 @@ void Setup_Next_Fighter(void) {
     paring_counter[COM_id] = 0;
     paring_bonus_r[COM_id] = 0;
     My_char[COM_id] = EM_id;
-    if (Train_Mode) {
-        /* personal mod: training dummy mirrors the player's character */
-        My_char[1] = My_char[0];
-    }
     if (EM_id == 18) {
         Battle_Country = Q_Country;
         bg_w.stage = Q_Country;

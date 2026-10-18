@@ -37,7 +37,6 @@
 #include "win_pl.h"
 #include "CMD_MAIN.h"
 #include "cmd_main_2.h"
-#include "training.h"
 #include "ta_sub.h"
 #include "PLSGAUGE.h"
 #include "EFFG3.h"
@@ -58,8 +57,6 @@ void Player_move(PLW* wk, u16 lv_data) {
     if (Demo_Lever_Play != 0xFF) {
         if (wk->wu.operator) {
             wk->cp->sw_lvbt = lv_data;
-        } else if (Train_Mode && wk->wu.id == 1 && Train_Dummy != TD_CPU) {
-            wk->cp->sw_lvbt = sw_to_lvbt(train_dummy_sw(wk));
         } else {
             wk->cp->sw_lvbt = sw_to_lvbt(CPU_Sub(wk));
         }
